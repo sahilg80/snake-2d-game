@@ -7,6 +7,7 @@ public class GameHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Sprite sprite = GameAssets.Instance.snakeBodySprite;
         
     }
 
