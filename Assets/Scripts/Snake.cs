@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,20 @@ using UnityEngine;
 public class Snake : MonoBehaviour
 {
     private Vector2Int position;
-    //[SerializeField]
-    private Direction gridPosition;
+    private SnakeDirection directionFacing;
     private float currentTimer;
+    private int bodySize;
+    public int BodySize { 
+        get { 
+            return bodySize; 
+        }
+        set {
+            bodySize = value;
+            UpdateSnakeLength();
+        }
+    }
+    private List<GameObject> restOfBody;
+    private List<Vector3> previousPositions;
     [SerializeField]
     private float gridMaxTimer;
 
@@ -17,99 +29,128 @@ public class Snake : MonoBehaviour
         position = Vector2Int.zero;
         transform.position = new Vector3(position.x, position.y, 0);
         position = new Vector2Int(0, 1);
+        restOfBody = new List<GameObject>();
+        previousPositions = new List<Vector3>();
+        bodySize = 1;
+        FoodManager.Instance.SpawnFood(GameAssets.Instance.MassGainer);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow) && gridPosition != Direction.Up)
+        Translate();
+    }
+
+    private void Translate()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow) && directionFacing != SnakeDirection.Up && directionFacing != SnakeDirection.Down)
         {
-            position = new Vector2Int( 0, 1);
-            transform.position += new Vector3(position.x, position.y, 0);
-            currentTimer = 0;
-            gridPosition = Direction.Up;
+            position = new Vector2Int(0, 1);
+            SetPosition();
+            directionFacing = SnakeDirection.Up;
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow) && gridPosition != Direction.Down)
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && directionFacing != SnakeDirection.Down && directionFacing != SnakeDirection.Up)
         {
             position = new Vector2Int(0, -1);
-            transform.position += new Vector3(position.x, position.y, 0);
-            currentTimer = 0;
-            gridPosition = Direction.Down;
+            SetPosition();
+            directionFacing = SnakeDirection.Down;
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && gridPosition != Direction.Left)
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && directionFacing != SnakeDirection.Left && directionFacing != SnakeDirection.Right)
         {
-            position = new Vector2Int(-1,0);
-            transform.position += new Vector3(position.x, position.y, 0);
-            currentTimer = 0;
-            gridPosition = Direction.Left;
+            position = new Vector2Int(-1, 0);
+            SetPosition();
+            directionFacing = SnakeDirection.Left;
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && gridPosition != Direction.Right)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && directionFacing != SnakeDirection.Right && directionFacing != SnakeDirection.Left)
         {
             position = new Vector2Int(1, 0);
-            transform.position += new Vector3(position.x, position.y, 0);
-            currentTimer = 0;
-            gridPosition = Direction.Right;
+            SetPosition();
+            directionFacing = SnakeDirection.Right;
             Rotate();
             return;
         }
         currentTimer += Time.deltaTime;
-        if(gridMaxTimer < currentTimer)
+        if (gridMaxTimer < currentTimer)
         {
-            currentTimer = 0;
-            transform.position += new Vector3(position.x, position.y, 0);
+            SetPosition();
         }
+    }
+
+    private void SetPosition()
+    {
+        currentTimer = 0;
+        if(bodySize == previousPositions.Count)
+        {
+            previousPositions.RemoveAt(0);
+        }
+        previousPositions.Add(transform.position);
+        transform.position += new Vector3(position.x, position.y, 0);
+        UpdateRestOfBodyPosition();
     }
 
     private void Rotate()
     {
         float angle = 0f;
         Vector2 currentRot = new Vector2(0, transform.forward.z);
-        Debug.Log("pos" + currentRot);
-        switch (gridPosition)
+        switch (directionFacing)
         {
-            case Direction.Up:
+            case SnakeDirection.Up:
                 angle = Vector2.SignedAngle(currentRot, Vector2.up);
-                //RotateTo(Vector2.up);
-                //transform.rotation = Quaternion.Euler(90,0,0);
                 break;
-            case Direction.Down:
+            case SnakeDirection.Down:
                 angle = Vector2.SignedAngle(currentRot, Vector2.down);
-                //RotateTo(Vector2.down);
                 break;
-            case Direction.Left:
+            case SnakeDirection.Left:
                 angle = Vector2.SignedAngle(currentRot, Vector2.left);
-                //RotateTo(Vector2.left);
                 break;
-            case Direction.Right:
+            case SnakeDirection.Right:
                 angle = Vector2.SignedAngle(currentRot, Vector2.right);
-                //RotateTo(Vector2.right);
                 break;
         }
-        Debug.Log("angle " + angle);
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    void RotateTo(Vector2 direction)
+    
+    private void UpdateSnakeLength()
     {
-        // Calculate the target rotation
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        if (bodySize == previousPositions.Count - 1)
+        {
+            Debug.Log("decrease snake length");
+            ObjectPoolManager.Instance.DeSpawnObject(restOfBody[restOfBody.Count - 1]);
+            restOfBody.RemoveAt(restOfBody.Count - 1);
+            previousPositions.RemoveAt(0);
+        }
 
-        // Smoothly rotate towards the target rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+        else
+        {
+            Debug.Log("increase snake length");
+            GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody);
+            restOfBody.Add(snakeBody);
+            snakeBody.transform.position = previousPositions[0];
+        }
     }
 
-}
+    private void UpdateRestOfBodyPosition()
+    {
+        if (bodySize <= 1) return;
+        foreach (var op in restOfBody)
+        {
+            ObjectPoolManager.Instance.DeSpawnObject(op);
+        }
+        restOfBody.Clear();
 
-public enum Direction
-{
-    Up,
-    Down,
-    Left,
-    Right,
+        for (int i=bodySize-1; i > 0; i--)
+        {
+            GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody);
+            snakeBody.transform.position = previousPositions[i];
+            restOfBody.Add(snakeBody);
+        }
+    }
+
 }

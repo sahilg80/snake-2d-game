@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Snake
+  - Gainer
+  - Burner
+  - Body
   layers:
   - Default
   - TransparentFX
@@ -44,6 +48,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Snake
+  - name: Interactable
     uniqueID: 4071426281
     locked: 0
