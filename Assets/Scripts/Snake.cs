@@ -9,6 +9,8 @@ public class Snake : MonoBehaviour
     private SnakeDirection directionFacing;
     private float currentTimer;
     private int bodySize;
+    public bool IsAlive { get; set; }
+
     public int BodySize { 
         get { 
             return bodySize; 
@@ -32,13 +34,17 @@ public class Snake : MonoBehaviour
         restOfBody = new List<GameObject>();
         previousPositions = new List<Vector3>();
         bodySize = 1;
-        FoodManager.Instance.SpawnFood(GameAssets.Instance.MassGainer);
+        CollectibleManager.Instance.SpawnFood(GameAssets.Instance.MassGainer);
+        IsAlive = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Translate();
+        if (IsAlive)
+        {
+            Translate();
+        }
     }
 
     private void Translate()
@@ -91,6 +97,7 @@ public class Snake : MonoBehaviour
         }
         previousPositions.Add(transform.position);
         transform.position += new Vector3(position.x, position.y, 0);
+        ValidateGridPosition();
         UpdateRestOfBodyPosition();
     }
 
@@ -150,6 +157,26 @@ public class Snake : MonoBehaviour
             GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody);
             snakeBody.transform.position = previousPositions[i];
             restOfBody.Add(snakeBody);
+        }
+    }
+
+    private void ValidateGridPosition()
+    {
+        if(transform.position.x < -GameAssets.Instance.Width)
+        {
+            transform.position = new Vector3(GameAssets.Instance.Width, transform.position.y, 0);
+        }
+        else if (transform.position.x > GameAssets.Instance.Width)
+        {
+            transform.position = new Vector3(-GameAssets.Instance.Width, transform.position.y, 0);
+        }
+        else if (transform.position.y < -GameAssets.Instance.Height)
+        {
+            transform.position = new Vector3( transform.position.x, GameAssets.Instance.Height, 0);
+        }
+        else if (transform.position.y > GameAssets.Instance.Height)
+        {
+            transform.position = new Vector3(transform.position.x, -GameAssets.Instance.Height, 0);
         }
     }
 
