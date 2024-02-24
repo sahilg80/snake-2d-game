@@ -24,3 +24,9 @@ public enum PowerUpType
     Boost,
     SpeedUp,
 }
+
+public enum GameState
+{
+    Paused,
+    Playing,
+}

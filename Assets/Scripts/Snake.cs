@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
+    [SerializeField]
+    private float gridMaxTimer;
     private Vector2Int position;
     private SnakeDirection directionFacing;
     private float currentTimer;
     private int bodySize;
-    public bool IsAlive { get; set; }
+    public bool IsAlive { get; private set; }
 
     public int BodySize { 
         get { 
@@ -22,13 +24,15 @@ public class Snake : MonoBehaviour
     }
     private List<GameObject> restOfBody;
     private List<Vector3> previousPositions;
-    [SerializeField]
-    private float gridMaxTimer;
+    public event Action<int> OnCollectFood;
+    public event Action OnSnakeDeath;
+    public event Action OnWinSnake;
 
     // Start is called before the first frame update
     void Start()
     {
         position = Vector2Int.zero;
+        Time.timeScale = 1;
         transform.position = new Vector3(position.x, position.y, 0);
         position = new Vector2Int(0, 1);
         restOfBody = new List<GameObject>();
@@ -132,6 +136,7 @@ public class Snake : MonoBehaviour
             ObjectPoolManager.Instance.DeSpawnObject(restOfBody[restOfBody.Count - 1]);
             restOfBody.RemoveAt(restOfBody.Count - 1);
             previousPositions.RemoveAt(0);
+            OnCollectFood?.Invoke(-1);
         }
 
         else
@@ -140,6 +145,13 @@ public class Snake : MonoBehaviour
             GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody);
             restOfBody.Add(snakeBody);
             snakeBody.transform.position = previousPositions[0];
+            OnCollectFood?.Invoke(1);
+        }
+        if (bodySize == 10)
+        {
+            IsAlive = false;
+            OnWinSnake?.Invoke();
+            Time.timeScale = 0f;
         }
     }
 
@@ -178,6 +190,14 @@ public class Snake : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x, -GameAssets.Instance.Height, 0);
         }
+    }
+
+    public void Death()
+    {
+        IsAlive = false;
+        OnSnakeDeath?.Invoke();
+        Time.timeScale = 0f;
+        ObjectPoolManager.Instance.objectPools.Clear();
     }
 
 }
