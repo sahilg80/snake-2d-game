@@ -22,8 +22,9 @@ public class Food : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= duration)
         {
-            FoodManager.Instance.SelectRandomFood();
+            timer = 0f;
             ObjectPoolManager.Instance.DeSpawnObject(gameObject);
+            CollectibleManager.Instance.SelectRandomFood();
         }
     }
 
@@ -47,14 +48,15 @@ public class Food : MonoBehaviour
                 snake.BodySize = snake.BodySize - 1;
                 break;
         }
+        timer = 0f;
+        ObjectPoolManager.Instance.DeSpawnObject(gameObject);
         if (snake.BodySize == 1)
-        { 
-            FoodManager.Instance.SpawnFood(GameAssets.Instance.MassGainer); 
+        {
+            CollectibleManager.Instance.SpawnFood(GameAssets.Instance.MassGainer); 
         }
         else
         {
-            FoodManager.Instance.SelectRandomFood();
-            ObjectPoolManager.Instance.DeSpawnObject(gameObject);
+            CollectibleManager.Instance.SelectRandomFood();
         }
     }
 }

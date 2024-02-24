@@ -13,13 +13,6 @@ public class SingletonBehaviour<T> : MonoBehaviour where T : Component
             {
                 // Search for an instance of the requested type in the scene
                 instance = FindObjectOfType<T>();
-
-                // If no instance is found, create a new GameObject and add the component
-                //if (instance == null)
-                //{
-                //    GameObject singletonObject = new GameObject(typeof(T).Name);
-                //    instance = singletonObject.AddComponent<T>();
-                //}
             }
             return instance;
         }
