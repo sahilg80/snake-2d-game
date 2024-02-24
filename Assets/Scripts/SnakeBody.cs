@@ -10,8 +10,7 @@ public class SnakeBody : MonoBehaviour
         if (snake != null)
         {
             Debug.Log("snake dead");
-            snake.IsAlive = false;
-            Time.timeScale = 0f;
+            snake.Death();
         }
     }
 }
