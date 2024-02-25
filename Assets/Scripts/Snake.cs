@@ -9,14 +9,24 @@ public class Snake : MonoBehaviour
     private float gridMaxTimer;
     [SerializeField]
     private float speedMultiplier;
+    [SerializeField]
+    private SpriteRenderer powerUpCollectedSprite;
+    [SerializeField]
+    private Sprite speedUpSprite;
+    [SerializeField]
+    private Sprite scoreBoostSprite;
+    [SerializeField]
+    private Sprite shieldSprite;
     private float previousGridMaxTimer;
     private Vector2Int position;
     private SnakeDirection directionFacing;
     private float currentTimer;
     private int bodySize;
     public bool IsAlive { get; private set; }
-    public bool IsShielded { get; set; }
-    public bool IsScoreBoosted { get; set; }
+    private bool isShielded;
+    public bool IsShielded { get => isShielded; set { isShielded = value; powerUpCollectedSprite.sprite = shieldSprite; OnCollectPowerUp?.Invoke(PowerUpType.Shield.ToString()); } }
+    private bool isScoreBoosted;
+    public bool IsScoreBoosted { get=> isScoreBoosted; set { isScoreBoosted = value; powerUpCollectedSprite.sprite = scoreBoostSprite; OnCollectPowerUp?.Invoke(PowerUpType.ScoreBoost.ToString()); } }
     private bool isSpeedBoosted;
     public bool IsSpeedBoosted 
     {
@@ -27,11 +37,23 @@ public class Snake : MonoBehaviour
         set
         {
             isSpeedBoosted = value;
+            powerUpCollectedSprite.sprite = speedUpSprite;
+            OnCollectPowerUp?.Invoke(PowerUpType.SpeedUp.ToString());
             if (isSpeedBoosted) ChangeMovementSpeed(speedMultiplier);
             else ChangeMovementSpeed(0);
         }
     }
-    public bool IsPowerUpActivated { get; set; }
+    private bool isPowerActivated;
+    public bool IsPowerUpActivated { get => isPowerActivated; 
+        set 
+        { 
+            isPowerActivated = value; 
+            powerUpCollectedSprite.enabled = value;
+            if (!isPowerActivated) 
+            {
+                OnCollectPowerUp?.Invoke(null);
+            }
+        } }
 
     public int BodySize { 
         get { 
@@ -47,6 +69,7 @@ public class Snake : MonoBehaviour
     public event Action<int> OnCollectFood;
     public event Action OnSnakeDeath;
     public event Action OnWinSnake;
+    public event Action<string> OnCollectPowerUp;
 
     // Start is called before the first frame update
     void Start()

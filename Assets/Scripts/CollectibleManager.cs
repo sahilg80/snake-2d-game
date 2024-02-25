@@ -57,6 +57,7 @@ public class CollectibleManager : MonoBehaviour
 
     public void SpawnPowerUp(GameObject powerUpObj)
     {
+        if (powerUpObj == null) return;
         currentSpawnedPowerup = ObjectPoolManager.Instance.SpawnObject(powerUpObj);
         do
         {
