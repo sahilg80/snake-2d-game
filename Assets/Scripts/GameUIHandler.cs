@@ -74,13 +74,13 @@ public class GameUIHandler : MonoBehaviour
             case GameState.Paused:
                 currentState = GameState.Playing;
                 Time.timeScale = 1;
-                stateButtonImage.sprite = pauseSprite;
+                stateButtonImage.sprite = (Sprite)pauseSprite;
                 pauseText.SetActive(false);
                 break;
             case GameState.Playing:
                 currentState = GameState.Paused;
                 Time.timeScale = 0;
-                stateButtonImage.sprite = resumeSprite;
+                stateButtonImage.sprite = (Sprite)resumeSprite;
                 pauseText.SetActive(true);
                 break;
         }
@@ -96,7 +96,7 @@ public class GameUIHandler : MonoBehaviour
     private void OnDisable()
     {
         stateButton.onClick.RemoveAllListeners();
-        snake.OnSnakeDeath += OnSnakeDead;
+        snake.OnSnakeDeath -= OnSnakeDead;
         snake.OnCollectFood -= UpdateScore;
     }
 

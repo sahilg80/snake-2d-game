@@ -7,11 +7,31 @@ public class Snake : MonoBehaviour
 {
     [SerializeField]
     private float gridMaxTimer;
+    [SerializeField]
+    private float speedMultiplier;
+    private float previousGridMaxTimer;
     private Vector2Int position;
     private SnakeDirection directionFacing;
     private float currentTimer;
     private int bodySize;
     public bool IsAlive { get; private set; }
+    public bool IsShielded { get; set; }
+    public bool IsScoreBoosted { get; set; }
+    private bool isSpeedBoosted;
+    public bool IsSpeedBoosted 
+    {
+        get
+        {
+            return isSpeedBoosted;
+        }
+        set
+        {
+            isSpeedBoosted = value;
+            if (isSpeedBoosted) ChangeMovementSpeed(speedMultiplier);
+            else ChangeMovementSpeed(0);
+        }
+    }
+    public bool IsPowerUpActivated { get; set; }
 
     public int BodySize { 
         get { 
@@ -130,13 +150,17 @@ public class Snake : MonoBehaviour
     
     private void UpdateSnakeLength()
     {
+        int factor = 1;
+        if (IsScoreBoosted)
+            factor = 2;
+
         if (bodySize == previousPositions.Count - 1)
         {
             Debug.Log("decrease snake length");
             ObjectPoolManager.Instance.DeSpawnObject(restOfBody[restOfBody.Count - 1]);
             restOfBody.RemoveAt(restOfBody.Count - 1);
-            previousPositions.RemoveAt(0);
-            OnCollectFood?.Invoke(-1);
+            previousPositions.RemoveAt(0); 
+            OnCollectFood?.Invoke(-1 * factor);
         }
 
         else
@@ -145,11 +169,12 @@ public class Snake : MonoBehaviour
             GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody);
             restOfBody.Add(snakeBody);
             snakeBody.transform.position = previousPositions[0];
-            OnCollectFood?.Invoke(1);
+            OnCollectFood?.Invoke(1 * factor);
         }
         if (bodySize == 10)
         {
             IsAlive = false;
+            ObjectPoolManager.Instance.objectPools.Clear();
             OnWinSnake?.Invoke();
             Time.timeScale = 0f;
         }
@@ -194,10 +219,22 @@ public class Snake : MonoBehaviour
 
     public void Death()
     {
+        if (IsShielded) return;
         IsAlive = false;
         OnSnakeDeath?.Invoke();
         Time.timeScale = 0f;
         ObjectPoolManager.Instance.objectPools.Clear();
+    }
+
+    private void ChangeMovementSpeed(float multiplier)
+    {
+        if (multiplier <= 0) 
+        { 
+            gridMaxTimer = previousGridMaxTimer;
+            return;
+        }
+        previousGridMaxTimer = gridMaxTimer;
+        gridMaxTimer = gridMaxTimer / multiplier;
     }
 
 }

@@ -21,7 +21,7 @@ public enum FoodType
 public enum PowerUpType
 {
     Shield,
-    Boost,
+    ScoreBoost,
     SpeedUp,
 }
 
