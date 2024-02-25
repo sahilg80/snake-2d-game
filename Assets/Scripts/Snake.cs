@@ -6,7 +6,7 @@ using UnityEngine;
 public class Snake : MonoBehaviour
 {
     [SerializeField]
-    private float gridMaxTimer;
+    private float maxTimerToTakeNextPositionOnGrid;
     [SerializeField]
     private float speedMultiplier;
     [SerializeField]
@@ -129,7 +129,7 @@ public class Snake : MonoBehaviour
             return;
         }
         currentTimer += Time.deltaTime;
-        if (gridMaxTimer < currentTimer)
+        if (maxTimerToTakeNextPositionOnGrid < currentTimer)
         {
             SetPosition();
         }
@@ -253,11 +253,11 @@ public class Snake : MonoBehaviour
     {
         if (multiplier <= 0) 
         { 
-            gridMaxTimer = previousGridMaxTimer;
+            maxTimerToTakeNextPositionOnGrid = previousGridMaxTimer;
             return;
         }
-        previousGridMaxTimer = gridMaxTimer;
-        gridMaxTimer = gridMaxTimer / multiplier;
+        previousGridMaxTimer = maxTimerToTakeNextPositionOnGrid;
+        maxTimerToTakeNextPositionOnGrid = maxTimerToTakeNextPositionOnGrid / multiplier;
     }
 
 }

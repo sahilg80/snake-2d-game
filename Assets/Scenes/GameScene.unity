@@ -845,8 +845,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de5a75d73ddcb8c43b599f6c3e0f660d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridMaxTimer: 1
-  speedMultiplier: 3
+  maxTimerToTakeNextPositionOnGrid: 0.5
+  speedMultiplier: 4
   powerUpCollectedSprite: {fileID: 392488330}
   speedUpSprite: {fileID: 21300000, guid: b2cff137900b52c41b8863792572cf4e, type: 3}
   scoreBoostSprite: {fileID: 21300000, guid: 362ecc1a391c1f9468b7f042ed4184f0, type: 3}
