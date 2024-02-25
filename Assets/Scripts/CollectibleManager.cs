@@ -10,7 +10,6 @@ public class CollectibleManager : MonoBehaviour
     private float powerUpGapDuration;
     private Array foodEnumValues;
     private Array powerUpEnumValues;
-    private int snakeBodySize;
     private float powerUpLookUpTimer;
     private bool shouldPowerUpSpawn;
     private GameObject currentSpawnedFood;
@@ -27,14 +26,13 @@ public class CollectibleManager : MonoBehaviour
     {
         foodEnumValues = Enum.GetValues(typeof(FoodType));
         powerUpEnumValues = Enum.GetValues(typeof(PowerUpType));
-        snakeBodySize = 1;
         powerUpGapDuration = UnityEngine.Random.Range(10,15);
     }
 
     // Update is called once per frame
     void OnEnable()
     {
-        snake.OnCollectFood += OnFoodEaten;
+
     }
 
     void Update()
@@ -98,7 +96,7 @@ public class CollectibleManager : MonoBehaviour
 
     public void SelectRandomFood()
     {
-        if (snakeBodySize == 1)
+        if (snake.BodySize == 1)
         {
             SpawnFood(GameAssets.Instance.MassGainer);
             return;
@@ -124,14 +122,9 @@ public class CollectibleManager : MonoBehaviour
         SpawnFood(objToSpawn);
     }
 
-    private void OnFoodEaten(int val)
-    {
-        snakeBodySize = snakeBodySize + val;
-    }
-
     private void OnDisable()
     {
-        snake.OnCollectFood -= OnFoodEaten;
+
     }
 
 }
