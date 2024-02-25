@@ -101,6 +101,7 @@ public class GameUIHandler : MonoBehaviour
         snake.OnSnakeDeath -= OnSnakeDead;
         snake.OnCollectFood -= UpdateScore;
         snake.OnCollectPowerUp -= OnPowerUpCollected;
+        snake.OnWinSnake -= OnSnakeWin;
     }
 
     private void OnSnakeDead()
