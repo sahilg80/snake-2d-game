@@ -8,6 +8,9 @@ TagManager:
   - Gainer
   - Burner
   - Body
+  - Shield
+  - SpeedBoost
+  - ScoreBoost
   layers:
   - Default
   - TransparentFX

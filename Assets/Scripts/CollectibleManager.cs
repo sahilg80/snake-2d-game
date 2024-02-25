@@ -7,9 +7,14 @@ public class CollectibleManager : MonoBehaviour
 {
     [SerializeField]
     private Snake snake;
-    private Array enumValues;
+    private float powerUpGapDuration;
+    private Array foodEnumValues;
+    private Array powerUpEnumValues;
     private int snakeBodySize;
-
+    private float powerUpLookUpTimer;
+    private bool shouldPowerUpSpawn;
+    private GameObject currentSpawnedFood;
+    private GameObject currentSpawnedPowerup;
     private static CollectibleManager instance;
     public static CollectibleManager Instance { get { return instance; } }
 
@@ -20,8 +25,10 @@ public class CollectibleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        enumValues = Enum.GetValues(typeof(FoodType));
+        foodEnumValues = Enum.GetValues(typeof(FoodType));
+        powerUpEnumValues = Enum.GetValues(typeof(PowerUpType));
         snakeBodySize = 1;
+        powerUpGapDuration = UnityEngine.Random.Range(10,15);
     }
 
     // Update is called once per frame
@@ -30,13 +37,62 @@ public class CollectibleManager : MonoBehaviour
         snake.OnCollectFood += OnFoodEaten;
     }
 
-    public void SpawnFood(GameObject obj)
+    void Update()
     {
-        GameObject spawnedFood = ObjectPoolManager.Instance.SpawnObject(obj);
+        if (snake.IsPowerUpActivated) return;
+
+        powerUpLookUpTimer += Time.deltaTime;
+        if (powerUpLookUpTimer >= powerUpGapDuration)
+        {
+            shouldPowerUpSpawn = true;
+            powerUpLookUpTimer = 0;
+            powerUpGapDuration = UnityEngine.Random.Range(10,15);
+        }
+        if (shouldPowerUpSpawn)
+        {
+            SelectRandomPowerUp();
+            shouldPowerUpSpawn = false;
+        }
+    }
+
+    public void SpawnPowerUp(GameObject powerUpObj)
+    {
+        currentSpawnedPowerup = ObjectPoolManager.Instance.SpawnObject(powerUpObj);
         do
         {
-            spawnedFood.transform.position = new Vector2(UnityEngine.Random.Range(-GameAssets.Instance.Width, GameAssets.Instance.Width), UnityEngine.Random.Range(-GameAssets.Instance.Height, GameAssets.Instance.Height));
-        } while (Vector2.Distance(transform.position, spawnedFood.transform.position) < 0.2f);
+            currentSpawnedPowerup.transform.position = new Vector2(UnityEngine.Random.Range(-GameAssets.Instance.Width, GameAssets.Instance.Width), UnityEngine.Random.Range(-GameAssets.Instance.Height, GameAssets.Instance.Height));
+        } while (Vector2.Distance(transform.position, currentSpawnedPowerup.transform.position) < 0.2f || Vector2.Distance(currentSpawnedFood.transform.position, currentSpawnedPowerup.transform.position) < 0.2f);
+    }
+
+    private void SelectRandomPowerUp()
+    {
+        int randomIndex = UnityEngine.Random.Range(0, powerUpEnumValues.Length);
+
+        PowerUpType powerUp = (PowerUpType)powerUpEnumValues.GetValue(randomIndex);
+
+        GameObject objToSpawn = null;
+        switch (powerUp)
+        {
+            case PowerUpType.Shield:
+                objToSpawn = GameAssets.Instance.ShieldPowerUp;
+                break;
+            case PowerUpType.ScoreBoost:
+                objToSpawn = GameAssets.Instance.ScoreBoostPowerUp;
+                break;
+            case PowerUpType.SpeedUp:
+                objToSpawn = GameAssets.Instance.SpeedBoostPowerUp;
+                break;
+        }
+        SpawnPowerUp(objToSpawn);
+    }
+
+    public void SpawnFood(GameObject obj)
+    {
+        currentSpawnedFood = ObjectPoolManager.Instance.SpawnObject(obj);
+        do
+        {
+            currentSpawnedFood.transform.position = new Vector2(UnityEngine.Random.Range(-GameAssets.Instance.Width, GameAssets.Instance.Width), UnityEngine.Random.Range(-GameAssets.Instance.Height, GameAssets.Instance.Height));
+        } while (Vector2.Distance(transform.position, currentSpawnedFood.transform.position) < 0.2f);
     }
 
     public void SelectRandomFood()
@@ -47,9 +103,9 @@ public class CollectibleManager : MonoBehaviour
             return;
         }
 
-        int randomIndex = UnityEngine.Random.Range(0, enumValues.Length);
+        int randomIndex = UnityEngine.Random.Range(0, foodEnumValues.Length);
 
-        FoodType food = (FoodType)enumValues.GetValue(randomIndex);
+        FoodType food = (FoodType)foodEnumValues.GetValue(randomIndex);
 
         GameObject objToSpawn = null;
         switch (food)

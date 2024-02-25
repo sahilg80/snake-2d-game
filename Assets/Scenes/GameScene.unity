@@ -629,6 +629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridMaxTimer: 1
+  speedMultiplier: 3
 --- !u!61 &582915730
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -991,19 +992,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 751472184}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 751472184}
-        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
-        m_MethodName: set_sprite
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 287168441944940942, guid: 4e1dc1c676dd0c44d9602f65d466541a, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Sprite, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &751472184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1024,7 +1013,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3076929297155210650, guid: 4e1dc1c676dd0c44d9602f65d466541a, type: 3}
+  m_Sprite: {fileID: -2077934235731579314, guid: 24e124a987c71c244a1a936abae64bb3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1423,6 +1412,9 @@ MonoBehaviour:
   SnakeBody: {fileID: 7476830786129476026, guid: ef2cb34bba31bca4b811362e61a8a75b, type: 3}
   MassGainer: {fileID: 7397857244236479979, guid: 019935aa8ec57de4d8c5d678ecc53bc5, type: 3}
   MassBurner: {fileID: 7397857244236479979, guid: dc64c89788c67294eafc9f3b0b951b2d, type: 3}
+  ShieldPowerUp: {fileID: 7397857244236479979, guid: 050bab2810fc9b24791089eaa3a7723d, type: 3}
+  SpeedBoostPowerUp: {fileID: 7397857244236479979, guid: c5046f67150dd85468a1fe2c609bcd70, type: 3}
+  ScoreBoostPowerUp: {fileID: 7397857244236479979, guid: 1058b7e0391aec04e918a96d4e3a8cde, type: 3}
 --- !u!4 &1003607112
 Transform:
   m_ObjectHideFlags: 0
@@ -2269,8 +2261,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameStateButton: {fileID: 751472181}
-  pauseSprite: {fileID: 3076929297155210650, guid: 4e1dc1c676dd0c44d9602f65d466541a, type: 3}
-  resumeSprite: {fileID: 287168441944940942, guid: 4e1dc1c676dd0c44d9602f65d466541a, type: 3}
+  pauseSprite: {fileID: -2077934235731579314, guid: 24e124a987c71c244a1a936abae64bb3, type: 3}
+  resumeSprite: {fileID: -6994260023490269902, guid: 24e124a987c71c244a1a936abae64bb3, type: 3}
   scoreUIText: {fileID: 621989521}
   snake: {fileID: 582915729}
   pauseText: {fileID: 1672378522}
