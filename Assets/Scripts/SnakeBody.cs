@@ -6,7 +6,7 @@ public class SnakeBody : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Snake snake = col.transform.GetComponent<Snake>();
+        BaseSnake snake = col.transform.GetComponent<BaseSnake>();
         if (snake != null)
         {
             Debug.Log("snake dead");

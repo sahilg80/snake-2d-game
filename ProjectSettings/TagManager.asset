@@ -7,10 +7,12 @@ TagManager:
   - Snake
   - Gainer
   - Burner
-  - Body
   - Shield
   - SpeedBoost
   - ScoreBoost
+  - Snake2
+  - SnakeBody2
+  - SnakeBody
   layers:
   - Default
   - TransparentFX

@@ -30,14 +30,14 @@ public class Food : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Snake snake = col.transform.GetComponent<Snake>();
+        BaseSnake snake = col.transform.GetComponent<BaseSnake>();
         if (snake != null)
         {
-            TakeCollisionAction(snake);
+            CollectFood(snake);
         }
     }
 
-    private void TakeCollisionAction(Snake snake)
+    private void CollectFood(BaseSnake snake)
     {
         switch (type)
         {

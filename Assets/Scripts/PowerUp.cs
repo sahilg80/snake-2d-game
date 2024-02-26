@@ -8,7 +8,7 @@ public class PowerUp : MonoBehaviour
     private bool isActivated;
     private bool isVisible;
     private SpriteRenderer spriteRenderer;
-    private Snake snakeCollided;
+    private BaseSnake snakeCollided;
     [SerializeField]
     private int visibilityDuration;
     [SerializeField]
@@ -50,12 +50,12 @@ public class PowerUp : MonoBehaviour
             {
                 activatedTimer = 0f;
                 isActivated = false;
-                DecisionBasedOnType();
+                DeActivatePowerUp();
             }
         }
     }
 
-    private void DecisionBasedOnType()
+    private void DeActivatePowerUp()
     {
         switch (type)
         {
@@ -69,36 +69,31 @@ public class PowerUp : MonoBehaviour
                 snakeCollided.IsSpeedBoosted = false;
                 break;
         }
-        snakeCollided.IsPowerUpActivated = false;
+        snakeCollided.IsPowerActivated = false;
         ObjectPoolManager.Instance.DeSpawnObject(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        snakeCollided = collision.transform.GetComponent<Snake>();
+        snakeCollided = collision.transform.GetComponent<BaseSnake>();
         if (snakeCollided != null)
         {
-            TakeCollisionAction();
+            ActivatePowerUp();
         }
     }
 
-    private void TakeCollisionAction()
+    private void ActivatePowerUp()
     {
-        snakeCollided.IsPowerUpActivated = true;
+        snakeCollided.IsPowerActivated = true;
         switch (type)
         {
             case PowerUpType.Shield:
                 snakeCollided.IsShielded = true;
-                Debug.Log("collided with shield");
-                //snake.BodySize = snake.BodySize + 1;
                 break;
             case PowerUpType.ScoreBoost:
-                Debug.Log("collided with score bost");
                 snakeCollided.IsScoreBoosted = true;
-                //snake.BodySize = snake.BodySize - 1;
                 break;
             case PowerUpType.SpeedUp:
-                Debug.Log("collided with speed up");
                 snakeCollided.IsSpeedBoosted = true;
                 break;
         }
