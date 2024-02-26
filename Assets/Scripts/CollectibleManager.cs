@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class CollectibleManager : MonoBehaviour
 {
+
     [SerializeField]
-    private Snake snake;
+    private BaseSnake snakeRed;
+    [SerializeField]
+    private BaseSnake snakeGreen;
     private float powerUpGapDuration;
     private Array foodEnumValues;
     private Array powerUpEnumValues;
@@ -37,7 +40,7 @@ public class CollectibleManager : MonoBehaviour
 
     void Update()
     {
-        if (snake.IsPowerUpActivated) return;
+        if (snakeGreen.IsPowerActivated || snakeRed.IsPowerActivated) return;
 
         powerUpLookUpTimer += Time.deltaTime;
         if (powerUpLookUpTimer >= powerUpGapDuration)
@@ -96,7 +99,7 @@ public class CollectibleManager : MonoBehaviour
 
     public void SelectRandomFood()
     {
-        if (snake.BodySize == 1)
+        if (snakeGreen.BodySize == 1 || snakeRed.BodySize == 1)
         {
             SpawnFood(GameAssets.Instance.MassGainer);
             return;

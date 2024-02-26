@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Snake : BaseSnake
+public class Snake2 : BaseSnake
 {
     //[SerializeField]
     //private float maxTimerToTakeNextPositionOnGrid;
@@ -26,9 +26,9 @@ public class Snake : BaseSnake
     //private bool isShielded;
     //public bool IsShielded { get => isShielded; set { isShielded = value; powerUpCollectedSprite.sprite = shieldSprite; OnCollectPowerUp?.Invoke(PowerUpType.Shield.ToString()); } }
     //private bool isScoreBoosted;
-    //public bool IsScoreBoosted { get=> isScoreBoosted; set { isScoreBoosted = value; powerUpCollectedSprite.sprite = scoreBoostSprite; OnCollectPowerUp?.Invoke(PowerUpType.ScoreBoost.ToString()); } }
+    //public bool IsScoreBoosted { get => isScoreBoosted; set { isScoreBoosted = value; powerUpCollectedSprite.sprite = scoreBoostSprite; OnCollectPowerUp?.Invoke(PowerUpType.ScoreBoost.ToString()); } }
     //private bool isSpeedBoosted;
-    //public bool IsSpeedBoosted 
+    //public bool IsSpeedBoosted
     //{
     //    get
     //    {
@@ -44,22 +44,28 @@ public class Snake : BaseSnake
     //    }
     //}
     //private bool isPowerActivated;
-    //public bool IsPowerUpActivated { get => isPowerActivated; 
-    //    set 
-    //    { 
-    //        isPowerActivated = value; 
+    //public bool IsPowerUpActivated
+    //{
+    //    get => isPowerActivated;
+    //    set
+    //    {
+    //        isPowerActivated = value;
     //        powerUpCollectedSprite.enabled = value;
-    //        if (!isPowerActivated) 
+    //        if (!isPowerActivated)
     //        {
     //            OnCollectPowerUp?.Invoke(null);
     //        }
-    //    } }
-
-    //public int BodySize { 
-    //    get { 
-    //        return bodySize; 
     //    }
-    //    set {
+    //}
+
+    //public int BodySize
+    //{
+    //    get
+    //    {
+    //        return bodySize;
+    //    }
+    //    set
+    //    {
     //        bodySize = value;
     //        UpdateSnakeLength();
     //    }
@@ -74,9 +80,8 @@ public class Snake : BaseSnake
     // Start is called before the first frame update
     protected override void Start()
     {
-        position = new Vector2Int(-GameAssets.Instance.Width, -GameAssets.Instance.Height);
+        position = new Vector2Int(GameAssets.Instance.Width, -GameAssets.Instance.Height);
         base.Start();
-        CollectibleManager.Instance.SpawnFood(GameAssets.Instance.MassGainer);
     }
 
     // Update is called once per frame
@@ -90,7 +95,7 @@ public class Snake : BaseSnake
 
     protected override void Translate()
     {
-        if (Input.GetKeyDown(KeyCode.W) && directionFacing != SnakeDirection.Up && directionFacing != SnakeDirection.Down)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && directionFacing != SnakeDirection.Up && directionFacing != SnakeDirection.Down)
         {
             position = new Vector2Int(0, 1);
             SetPosition();
@@ -98,7 +103,7 @@ public class Snake : BaseSnake
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.S) && directionFacing != SnakeDirection.Down && directionFacing != SnakeDirection.Up)
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && directionFacing != SnakeDirection.Down && directionFacing != SnakeDirection.Up)
         {
             position = new Vector2Int(0, -1);
             SetPosition();
@@ -106,7 +111,7 @@ public class Snake : BaseSnake
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.A) && directionFacing != SnakeDirection.Left && directionFacing != SnakeDirection.Right)
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && directionFacing != SnakeDirection.Left && directionFacing != SnakeDirection.Right)
         {
             position = new Vector2Int(-1, 0);
             SetPosition();
@@ -114,7 +119,7 @@ public class Snake : BaseSnake
             Rotate();
             return;
         }
-        else if (Input.GetKeyDown(KeyCode.D) && directionFacing != SnakeDirection.Right && directionFacing != SnakeDirection.Left)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && directionFacing != SnakeDirection.Right && directionFacing != SnakeDirection.Left)
         {
             position = new Vector2Int(1, 0);
             SetPosition();
@@ -132,7 +137,7 @@ public class Snake : BaseSnake
     //private void SetPosition()
     //{
     //    currentTimer = 0;
-    //    if(bodySize == previousPositions.Count)
+    //    if (bodySize == previousPositions.Count)
     //    {
     //        previousPositions.RemoveAt(0);
     //    }
@@ -164,7 +169,7 @@ public class Snake : BaseSnake
     //    transform.rotation = Quaternion.Euler(0, 0, angle);
     //}
 
-    
+
     //protected override void UpdateSnakeLength()
     //{
     //    int factor = 1;
@@ -176,14 +181,14 @@ public class Snake : BaseSnake
     //        Debug.Log("decrease snake length");
     //        ObjectPoolManager.Instance.DeSpawnObject(restOfBody[restOfBody.Count - 1]);
     //        restOfBody.RemoveAt(restOfBody.Count - 1);
-    //        previousPositions.RemoveAt(0); 
+    //        previousPositions.RemoveAt(0);
     //        OnCollectFood?.Invoke(-1 * factor);
     //    }
 
     //    else
     //    {
     //        Debug.Log("increase snake length");
-    //        GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(bodyPart);
+    //        GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody2);
     //        restOfBody.Add(snakeBody);
     //        snakeBody.transform.position = previousPositions[0];
     //        OnCollectFood?.Invoke(1 * factor);
@@ -206,9 +211,9 @@ public class Snake : BaseSnake
     //    }
     //    restOfBody.Clear();
 
-    //    for (int i=bodySize-1; i > 0; i--)
+    //    for (int i = bodySize - 1; i > 0; i--)
     //    {
-    //        GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(bodyPart);
+    //        GameObject snakeBody = ObjectPoolManager.Instance.SpawnObject(GameAssets.Instance.SnakeBody2);
     //        snakeBody.transform.position = previousPositions[i];
     //        restOfBody.Add(snakeBody);
     //    }
@@ -216,7 +221,7 @@ public class Snake : BaseSnake
 
     //private void ValidateGridPosition()
     //{
-    //    if(transform.position.x < -GameAssets.Instance.Width)
+    //    if (transform.position.x < -GameAssets.Instance.Width)
     //    {
     //        transform.position = new Vector3(GameAssets.Instance.Width, transform.position.y, 0);
     //    }
@@ -226,7 +231,7 @@ public class Snake : BaseSnake
     //    }
     //    else if (transform.position.y < -GameAssets.Instance.Height)
     //    {
-    //        transform.position = new Vector3( transform.position.x, GameAssets.Instance.Height, 0);
+    //        transform.position = new Vector3(transform.position.x, GameAssets.Instance.Height, 0);
     //    }
     //    else if (transform.position.y > GameAssets.Instance.Height)
     //    {
@@ -243,10 +248,10 @@ public class Snake : BaseSnake
     //    ObjectPoolManager.Instance.objectPools.Clear();
     //}
 
-    //protected override void ChangeMovementSpeed(float multiplier)
+    //protec override void ChangeMovementSpeed(float multiplier)
     //{
-    //    if (multiplier <= 0) 
-    //    { 
+    //    if (multiplier <= 0)
+    //    {
     //        maxTimerToTakeNextPositionOnGrid = previousGridMaxTimer;
     //        return;
     //    }

@@ -13,42 +13,29 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField]
     Sprite resumeSprite;
     [SerializeField]
-    TextMeshProUGUI scoreUIText;
-    [SerializeField]
-    Snake snake;
-    [SerializeField]
     GameObject pauseText;
     [SerializeField]
     GameObject gameOverPanel;
     [SerializeField]
     GameObject gameWinPanel;
+
     [SerializeField]
-    TextMeshProUGUI powerUpCollectedText;
+    private BaseSnake snakeRed;
+    [SerializeField]
+    private BaseSnake snakeGreen;
+
     private Button stateButton;
     private Image stateButtonImage;
     private int score;
     public int Score
     {
         get { return score; }
-        set
+        private set
         {
             score = value;
-            scoreUIText.SetText(score.ToString());
         }
     }
     private GameState currentState;
-    public GameState CurrentState
-    {
-        get
-        {
-            return currentState;
-        }
-        set
-        {
-            currentState = value;
-        }
-    }
-
     private void Awake()
     {
         stateButton = GameStateButton.GetComponent<Button>();
@@ -64,10 +51,16 @@ public class GameUIHandler : MonoBehaviour
     void OnEnable()
     {
         stateButton.onClick.AddListener(ChangeGameState);
+        InitializeSnakeUI(snakeGreen);
+        InitializeSnakeUI(snakeRed);
+    }
+
+    private void InitializeSnakeUI(BaseSnake snake)
+    {
         snake.OnSnakeDeath += OnSnakeDead;
         snake.OnCollectFood += UpdateScore;
-        snake.OnWinSnake += OnSnakeWin;
         snake.OnCollectPowerUp += OnPowerUpCollected;
+        snake.OnWinSnake += OnSnakeWin;
     }
 
     private void ChangeGameState()
@@ -89,34 +82,41 @@ public class GameUIHandler : MonoBehaviour
         }
     }
 
-    private void UpdateScore(int val)
+    private void UpdateScore(SnakeUI snakeUI, float scoreVal)
     {
-        score = score + val;
-        scoreUIText.SetText(score.ToString());
+        snakeUI.ScoreCountText.SetText(scoreVal.ToString());
     }
 
     private void OnDisable()
     {
         stateButton.onClick.RemoveAllListeners();
+        DeInitializeSnakeUI(snakeGreen);
+        DeInitializeSnakeUI(snakeRed);
+    }
+
+    private void DeInitializeSnakeUI(BaseSnake snake)
+    {
         snake.OnSnakeDeath -= OnSnakeDead;
         snake.OnCollectFood -= UpdateScore;
         snake.OnCollectPowerUp -= OnPowerUpCollected;
         snake.OnWinSnake -= OnSnakeWin;
     }
 
+
     private void OnSnakeDead()
     {
         gameOverPanel.SetActive(true);
     }
 
-    private void OnSnakeWin()
+    private void OnSnakeWin(SnakeUI snakeUI)
     {
         gameWinPanel.SetActive(true);
+        snakeUI.GameWinTitle.SetActive(true);
     }
 
-    public void OnPowerUpCollected(string power)
+    public void OnPowerUpCollected(SnakeUI snakeUI, string power)
     {
-        powerUpCollectedText.SetText(power);
+        snakeUI.CollectedPowerUpText.SetText(power);
     }
 
     public void OnClickRestart()
@@ -133,4 +133,14 @@ public class GameUIHandler : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
+
+}
+
+
+[System.Serializable]
+public class SnakeUI
+{
+    public TextMeshProUGUI CollectedPowerUpText;
+    public TextMeshProUGUI ScoreCountText;
+    public GameObject GameWinTitle;
 }
